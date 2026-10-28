@@ -1,0 +1,23 @@
+.sun-moon-toggle { position: relative; isolation: isolate; display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; overflow: hidden; border: 0; border-radius: 50%; padding: 0; background: var(--bg-secondary); color: var(--text-primary); touch-action: manipulation; }
+.sun-moon-toggle:focus-visible { outline: 2px solid var(--accent-amber); outline-offset: 2px; }
+.sun-moon-toggle:disabled { pointer-events: none; opacity: .5; }
+.sun-moon-sky, .sun-moon-body { position: absolute; inset: 0; pointer-events: none; }
+.sun-moon-body { z-index: 1; display: flex; align-items: center; justify-content: center; }
+.sun-moon-night { background: linear-gradient(180deg,#090f2a,#16204b 60%,#2a2f66); }
+.sun-moon-day { background: linear-gradient(180deg,#79b7de,#bedbef 60%,#f5e4bd); }
+.sun-moon-star { position: absolute; border-radius: 50%; background: #fff; opacity: .65; }
+.sun-moon-moon { color: #f4dfaa; }
+.sun-moon-sun { color: #a84f1f; }
+::view-transition { pointer-events: none; }
+::view-transition-group(*) { animation-duration: 0s; }
+::view-transition-old(root), ::view-transition-new(root),
+::view-transition-old(medisense-toggle), ::view-transition-new(medisense-toggle),
+::view-transition-old(medisense-sun), ::view-transition-new(medisense-sun),
+::view-transition-old(medisense-moon), ::view-transition-new(medisense-moon) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { z-index: 1; }
+::view-transition-old(root) { z-index: 0; }
+::view-transition-group(medisense-sun), ::view-transition-group(medisense-moon) { overflow: clip; border-radius: 50%; }
+html.theme-changing :is(body,.site-main,.site-header.medisense-header,.hwf-root,.nav-header,.nav-header-cursor,.header-menu,.upload-dropbox,.document-tabs,.reviews-empty,.review-quote,.process-orb),
+html.theme-changing :is(.clarity-heading>p,.process-step p,.upload-intro>p,.upload-facts span,.upload-caption,.chapter-heading>p,.document-details p,.precision-copy p,.reviews-heading>p,.reviews-empty p,.hwf-brand small,.hwf-top nav h3,.hwf-meta) {
+  transition: color var(--theme-swap-duration) cubic-bezier(.65,0,.35,1), background-color var(--theme-swap-duration) cubic-bezier(.65,0,.35,1), border-color var(--theme-swap-duration) cubic-bezier(.65,0,.35,1);
+}

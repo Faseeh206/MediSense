@@ -1,0 +1,27 @@
+.brand-logo { display:inline-flex; align-items:center; justify-content:center; gap:5px; height:64px; flex-shrink:0; color:inherit; border-radius:10px; text-decoration:none; touch-action:manipulation; }
+.brand-logo svg { display:block; flex-shrink:0; width:56px; height:56px; fill:currentColor; overflow:visible; }
+.brand-wordmark { display:inline-flex; align-items:baseline; padding-right:2px; font-family:var(--font-body); font-size:30px; font-weight:650; letter-spacing:-.04em; line-height:1.2; white-space:nowrap; }
+.brand-wordmark[data-brand-reveal="pending"] { opacity:0; }
+.brand-wordmark[data-brand-reveal="ready"] { animation:brand-wordmark-reveal 900ms var(--ease-out) 120ms both; }
+.brand-wordmark-medi { color:#98512e; background:linear-gradient(105deg,#98512e 5%,#745363 52%,#98512e 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.brand-wordmark-sense { color:var(--text-primary); font-weight:550; }
+[data-theme="dark"] .brand-wordmark-medi { color:#e5b489; background-image:linear-gradient(105deg,#edb989 5%,#dcb6c8 52%,#edb989 100%); }
+[data-theme="dark"] .brand-wordmark-sense { color:#fffaf1; }
+@media(min-width:1201px) {
+    .site-header:not(.is-scrolled) .brand-wordmark-medi { background-image:linear-gradient(105deg,#ffd0a0 5%,#e4c0cf 52%,#ffd0a0 100%); }
+    .site-header:not(.is-scrolled) .brand-wordmark-sense { color:#fffaf1; }
+}
+@keyframes brand-wordmark-reveal {
+    from { opacity:0; clip-path:inset(0 100% 0 0); transform:translateX(-8px); }
+    to { opacity:1; clip-path:inset(0 0 0 0); transform:translateX(0); }
+}
+.brand-logo [data-folio-page] { transform-box:view-box; }
+.brand-logo[data-brand-motion="paused"] .brand-wordmark { animation-play-state:paused; }
+.brand-logo [data-folio-page="left"] { transform-origin:112px 160px; }
+.brand-logo [data-folio-page="right"] { transform-origin:136px 160px; }
+@media(max-width:1200px) { .brand-logo { margin-right:auto; } }
+@media(max-width:540px) { .brand-logo { gap:1px; height:52px; } .brand-logo svg { width:42px; height:42px; } .brand-wordmark { font-size:22px; } }
+@media(max-width:380px) { .brand-logo svg { width:38px; height:38px; } .brand-wordmark { font-size:21px; } }
+@media(prefers-reduced-motion:reduce) { .brand-wordmark[data-brand-reveal] { animation:none; opacity:1; } }
+html[data-reduced-motion] .brand-wordmark[data-brand-reveal] { animation:none; opacity:1; }
+@media(forced-colors:active) { .brand-wordmark-medi { background:none; color:LinkText; -webkit-text-fill-color:currentColor; } }

@@ -1,0 +1,30 @@
+.gyro-cursor {
+    --gyro-ink: var(--accent-amber-hover);
+    position: fixed;
+    inset: 0 auto auto 0;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2147483647;
+}
+[data-theme="dark"] .gyro-cursor { --gyro-ink: var(--accent-amber); }
+.gyro-cursor-arrow {
+    display: block;
+    overflow: visible;
+    transform-origin: 16px 3px;
+    fill: var(--gyro-ink);
+    stroke: var(--bg-secondary);
+    stroke-width: 1.7px;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 2px 2px #21160e26);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    html.gyro-cursor-active, html.gyro-cursor-active * { cursor: none !important; }
+    html.gyro-cursor-active :is(input, textarea, [contenteditable="true"], [role="textbox"]) { cursor: text !important; }
+    html.gyro-cursor-active :is(select, option, dialog[open], dialog[open] *, [data-cursor="native"], [data-cursor="native"] *) { cursor: auto !important; }
+}
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .gyro-cursor { display: none; }
+}
+html[data-reduced-motion] .gyro-cursor { display: none; }

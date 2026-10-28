@@ -1,0 +1,38 @@
+.site-header.medisense-header { height: 96px; gap: clamp(16px,2vw,30px); padding-inline: 4%; }
+.site-header.medisense-header > .wordmark { flex-shrink: 0; font-size: clamp(28px,2.5vw,36px); }
+.site-header.medisense-header.is-scrolled { height: var(--nav-anchor-offset); }
+.header-menu { display: flex; align-items: center; justify-content: flex-end; gap: clamp(16px,2vw,30px); flex: 1; min-width: 0; }
+.header-menu > nav { position: absolute; left: 50%; transform: translateX(-50%); }
+.header-menu-button { display: none; width: 44px; height: 44px; flex-shrink: 0; align-items: center; justify-content: center; border: 1.5px solid var(--text-primary); border-radius: 50%; background: var(--bg-secondary); color: var(--text-primary); }
+.header-utilities { flex-shrink: 0; }
+.header-mobile-motion { display: none; }
+.header-utilities .nav-header-item--custom { display: grid; place-items: center; }
+@media(max-width:1400px) and (min-width:1201px) {
+  .site-header.medisense-header { padding-inline: 3%; gap: 16px; }
+  .header-menu { gap: 16px; }
+  .header-menu .nav-header-action { padding-inline: 14px; font-size: 13px; }
+  .header-utilities.nav-header--icons .nav-header-action { padding: 0; width: 42px; }
+}
+@media(max-width:1200px) {
+  .site-header.medisense-header, .site-header.medisense-header.is-scrolled { height: var(--nav-anchor-offset); padding-inline: 24px; gap: 16px; }
+  .site-header.medisense-header > .wordmark { font-size: 30px; margin-right: auto; }
+  .header-menu-button { display: flex; }
+  .header-menu { display: none; position: absolute; inset: 80px 20px auto; padding: 18px; flex-direction: column; gap: 16px; border-radius: 24px; background: var(--bg-secondary); box-shadow: 0 14px 35px #2a1a1726; color: var(--text-primary); }
+  .header-menu.is-open { display: flex; }
+  .header-mobile-motion { display: flex; }
+  .header-utilities [data-nav-item="motion"] { display: none; }
+  .header-menu > nav { position: static; transform: none; width: 100%; }
+  .header-menu nav .nav-header { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); width: 100%; }
+  .header-menu nav .nav-header-action { padding: 12px 10px; font-size: 14px; white-space: normal; text-align: center; }
+}
+@media(max-width:540px) {
+  .site-header.medisense-header, .site-header.medisense-header.is-scrolled { padding-inline: 18px; gap: 10px; height: var(--nav-anchor-offset); }
+  .site-header.medisense-header > .wordmark { font-size: 27px; }
+  .header-menu { top: 76px; inset-inline: 14px; padding: 14px; }
+  .header-menu nav .nav-header-action { font-size: 13px; padding-inline: 8px; }
+  .header-menu-button { width: 40px; height: 40px; }
+}
+@media(max-width:360px) {
+  .site-header.medisense-header, .site-header.medisense-header.is-scrolled { padding-inline: 8px; gap: 3px; }
+  .site-header.medisense-header > .wordmark { font-size: 24px; }
+}

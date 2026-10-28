@@ -1,0 +1,30 @@
+.medisense-footer { background:var(--footer-background); color:var(--text-primary); }
+.medisense-footer .hwf-top { grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,.8fr)) auto; column-gap:40px; padding-top:54px; }
+.medisense-footer .hwf-brand .wordmark { display:inline-flex; max-width:100%; text-decoration:none; }
+.medisense-footer .footer-brand-lockup { display:inline-flex; align-items:center; gap:7px; max-width:100%; color:var(--text-primary); }
+.footer-brand-lockup>svg { width:clamp(64px,6vw,80px); height:auto; flex-shrink:0; fill:currentColor; }
+.footer-brand-lockup .brand-wordmark { font-size:clamp(44px,4.5vw,64px); }
+.medisense-footer .hwf-brand p { max-width:28ch; margin-block:20px 14px; font-size:17px; line-height:1.6; }
+.medisense-footer .hwf-brand small { max-width:29ch; font-size:13px; line-height:1.75; }
+.medisense-footer .hwf-top nav h3 { margin-bottom:15px; font-size:13px; font-weight:600; }
+.medisense-footer .hwf-top nav a { min-height:44px; font-size:15px; gap:10px; }
+.medisense-footer .hwf-up { min-height:44px; padding:10px 15px; border:1px solid var(--surface-border); border-radius:30px; font-size:12px; gap:8px; }
+.medisense-footer .hwf-meta { margin-top:34px; padding-top:19px; border-top:1px solid var(--surface-border); font-size:12px; }
+@media(hover:hover) and (pointer:fine) { .medisense-footer .hwf-up:hover { background:var(--bg-secondary); } }
+@media(max-width:1100px) {
+    .medisense-footer .hwf-top { grid-template-columns:minmax(0,1.2fr) repeat(2,minmax(0,1fr)); gap:32px; }
+    .medisense-footer .hwf-brand { grid-column:1/-1; }
+    .medisense-footer .hwf-up { grid-column:1; justify-self:start; }
+}
+@media(max-width:700px) {
+    .medisense-footer .hwf-top { grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px 22px; padding-top:36px; }
+    .medisense-footer .footer-brand-lockup { gap:4px; }
+    .footer-brand-lockup>svg { width:54px; }
+    .footer-brand-lockup .brand-wordmark { font-size:clamp(34px,9.3vw,48px); }
+    .medisense-footer .hwf-brand p { max-width:30ch; margin-top:15px; font-size:16px; }
+    .medisense-footer .hwf-brand small { max-width:none; }
+    .medisense-footer .hwf-top nav a { font-size:14px; }
+    .medisense-footer .hwf-up { grid-column:1/-1; }
+    .medisense-footer .hwf-meta { margin-top:24px; flex-wrap:wrap; gap:8px; }
+    .medisense-footer .hwf-meta>span:last-child { display:block; }
+}

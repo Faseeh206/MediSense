@@ -1,0 +1,13 @@
+.spring-text { position:relative; }
+.spring-text>.spring-text-native { display:inherit; width:100%; font:inherit; letter-spacing:inherit; color:inherit; text-transform:inherit; }
+.spring-text[data-spring-phase="waiting"]>.spring-text-native,
+.spring-text[data-spring-phase="active"]>.spring-text-native { opacity:0; }
+.spring-text>.spring-text-engine { position:absolute !important; inset:0 auto auto 0; width:100%; min-width:0; font:inherit; letter-spacing:inherit; line-height:inherit; pointer-events:none; }
+.spring-text-word { max-width:100%; overflow-wrap:anywhere; }
+.spring-text-word:has(br) { flex-basis:100%; width:100%; height:0; line-height:0; }
+.spring-text-word:has(br.mobile-break) { display:none !important; }
+@media(max-width:700px) { .spring-text-word:has(br.mobile-break) { display:inline-block !important; } }
+@media print {
+    .spring-text>.spring-text-native { opacity:1 !important; }
+    .spring-text>.spring-text-engine { display:none !important; }
+}

@@ -1,0 +1,12 @@
+.nav-header { position: relative; display: flex; align-items: stretch; width: fit-content; padding: 4px; margin: 0; list-style: none; isolation: isolate; border: 1.5px solid color-mix(in srgb, var(--text-primary) 75%, transparent); border-radius: 999px; background: var(--bg-secondary); }
+.nav-header-item { position: relative; z-index: 1; color: #fff; mix-blend-mode: difference; }
+.nav-header-action { position: relative; display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 11px 20px; border: 0; border-radius: 999px; background: transparent; color: inherit; font-family: var(--font-body); font-size: 14px; font-weight: 550; line-height: 1.4; white-space: nowrap; text-decoration: none; touch-action: manipulation; }
+.nav-header-action:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+.nav-header-action:active { transform: scale(.97); }
+.nav-header-cursor { position: absolute; z-index: 0; inset: 4px auto 4px 0; border-radius: 999px; background: var(--text-primary); pointer-events: none; }
+.nav-header-icon { display: flex; }
+.nav-header-icon svg { width: 19px; height: 19px; stroke-width: 1.7; }
+.nav-header--icons .nav-header-action { width: 44px; padding: 0; }
+.nav-header--icons .nav-header-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.nav-header-badge { position: absolute; inset: 1px 1px auto auto; font-size: 10px; min-width: 14px; line-height: 14px; text-align: center; }
+.nav-header-item--custom { mix-blend-mode: normal; }

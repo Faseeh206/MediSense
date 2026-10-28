@@ -1,0 +1,25 @@
+.analyze-document-button { --analyze-ground: #914825; --analyze-ink: #fff7e9; --analyze-chip: #f4dfbf; position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; gap: 13px; min-height: 56px; padding: 7px 8px 7px 20px; overflow: hidden; border: 0; border-radius: 999px; background: var(--analyze-ground); color: var(--analyze-ink); box-shadow: inset 0 1px 0 #ffffff40, 0 5px 14px #4a2a1414; font-size: 15px; font-weight: 600; line-height: 1.3; text-decoration: none; white-space: nowrap; touch-action: manipulation; transition: background-color 180ms ease, transform 140ms ease; }
+[data-theme="dark"] .analyze-document-button { --analyze-ground: #dba573; --analyze-ink: #302318; --analyze-chip: #33271f; }
+.analyze-document-mark { position: relative; display: grid; place-items: center; }
+.analyze-document-mark::after { content: ''; position: absolute; inset: 4px 0 auto; height: 1px; background: currentColor; opacity: 0; }
+.analyze-document-label { padding-right: 6px; }
+.analyze-document-arrow { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--analyze-chip); color: var(--analyze-ground); transition: transform 220ms cubic-bezier(.16,1,.3,1); }
+[data-theme="dark"] .analyze-document-arrow { color: #f4dfbf; }
+.analyze-document-short { display: none; }
+.analyze-document-button:active { transform: scale(.975); }
+.analyze-document-button:disabled { cursor: default; opacity: .5; }
+@media (hover: hover) {
+  .analyze-document-button:hover { background: color-mix(in srgb, var(--analyze-ground) 91%, var(--analyze-ink)); }
+  .analyze-document-button:hover .analyze-document-arrow { transform: rotate(-6deg); }
+  .analyze-document-button:hover .analyze-document-mark::after { animation: analyze-document-scan 500ms cubic-bezier(.16,1,.3,1) both; }
+}
+@keyframes analyze-document-scan { 0% { transform: translateY(-3px); opacity: 0; } 25% { opacity: .65; } 100% { transform: translateY(14px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .analyze-document-button, .analyze-document-arrow, .analyze-document-arrow svg { transition: none; }
+  .analyze-document-button:hover .analyze-document-mark::after { animation: none; }
+}
+html[data-reduced-motion] .analyze-document-button:hover .analyze-document-mark::after { animation: none; }
+@media(max-width:360px) {
+  .analyze-document-button { max-width: 100%; font-size: 14px; gap: 10px; padding-left: 16px; }
+  .analyze-document-arrow { width: 34px; height: 34px; }
+}

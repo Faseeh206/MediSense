@@ -1,0 +1,338 @@
+[
+  {
+    "id": "LAB-001",
+    "title": "Metabolic and Lipid Panel",
+    "file": "01_metabolic_lipid_lab.pdf",
+    "document_type": "LAB_REPORT",
+    "expected_http": 200,
+    "biomarkers": [
+      {
+        "test_name": "Fasting Blood Glucose",
+        "observed_value": "118",
+        "unit": "mg/dL",
+        "reference_range": "70 - 99",
+        "status": "HIGH"
+      },
+      {
+        "test_name": "Total Cholesterol",
+        "observed_value": "238",
+        "unit": "mg/dL",
+        "reference_range": "< 200",
+        "status": "HIGH"
+      },
+      {
+        "test_name": "LDL Cholesterol (Direct)",
+        "observed_value": "154",
+        "unit": "mg/dL",
+        "reference_range": "< 100",
+        "status": "HIGH"
+      },
+      {
+        "test_name": "HDL Cholesterol",
+        "observed_value": "52",
+        "unit": "mg/dL",
+        "reference_range": "> 40",
+        "status": "NORMAL"
+      },
+      {
+        "test_name": "Serum Triglycerides",
+        "observed_value": "172",
+        "unit": "mg/dL",
+        "reference_range": "< 150",
+        "status": "HIGH"
+      },
+      {
+        "test_name": "Serum Creatinine",
+        "observed_value": "0.92",
+        "unit": "mg/dL",
+        "reference_range": "0.70 - 1.30",
+        "status": "NORMAL"
+      }
+    ],
+    "medicines": []
+  },
+  {
+    "id": "LAB-002",
+    "title": "Complete Blood Count",
+    "file": "02_cbc_lab.pdf",
+    "document_type": "LAB_REPORT",
+    "expected_http": 200,
+    "biomarkers": [
+      {
+        "test_name": "Hemoglobin (Hgb)",
+        "observed_value": "10.4",
+        "unit": "g/dL",
+        "reference_range": "12.0 - 16.0",
+        "status": "LOW"
+      },
+      {
+        "test_name": "Hematocrit (Hct)",
+        "observed_value": "32.1",
+        "unit": "%",
+        "reference_range": "36.0 - 46.0",
+        "status": "LOW"
+      },
+      {
+        "test_name": "Mean Corpuscular Volume (MCV)",
+        "observed_value": "73.5",
+        "unit": "fL",
+        "reference_range": "80.0 - 100.0",
+        "status": "LOW"
+      },
+      {
+        "test_name": "White Blood Cell Count (WBC)",
+        "observed_value": "6.8",
+        "unit": "10^3/uL",
+        "reference_range": "4.5 - 11.0",
+        "status": "NORMAL"
+      },
+      {
+        "test_name": "Platelet Count",
+        "observed_value": "265",
+        "unit": "10^3/uL",
+        "reference_range": "150 - 450",
+        "status": "NORMAL"
+      }
+    ],
+    "medicines": []
+  },
+  {
+    "id": "LAB-003",
+    "title": "Reference Interval Control Panel",
+    "file": "03_within_range_lab.pdf",
+    "document_type": "LAB_REPORT",
+    "expected_http": 200,
+    "biomarkers": [
+      {
+        "test_name": "Fasting Blood Glucose",
+        "observed_value": "85",
+        "unit": "mg/dL",
+        "reference_range": "70 - 99",
+        "status": "NORMAL"
+      },
+      {
+        "test_name": "Total Cholesterol",
+        "observed_value": "175",
+        "unit": "mg/dL",
+        "reference_range": "< 200",
+        "status": "NORMAL"
+      },
+      {
+        "test_name": "LDL Cholesterol (Direct)",
+        "observed_value": "90",
+        "unit": "mg/dL",
+        "reference_range": "< 100",
+        "status": "NORMAL"
+      },
+      {
+        "test_name": "HDL Cholesterol",
+        "observed_value": "55",
+        "unit": "mg/dL",
+        "reference_range": "> 40",
+        "status": "NORMAL"
+      },
+      {
+        "test_name": "Serum Triglycerides",
+        "observed_value": "100",
+        "unit": "mg/dL",
+        "reference_range": "< 150",
+        "status": "NORMAL"
+      },
+      {
+        "test_name": "Serum Creatinine",
+        "observed_value": "0.92",
+        "unit": "mg/dL",
+        "reference_range": "0.70 - 1.30",
+        "status": "NORMAL"
+      }
+    ],
+    "medicines": []
+  },
+  {
+    "id": "RX-001",
+    "title": "Demonstration Prescription A",
+    "file": "04_metformin_lisinopril_prescription.pdf",
+    "document_type": "PRESCRIPTION",
+    "expected_http": 200,
+    "biomarkers": [],
+    "medicines": [
+      {
+        "brand_name": "Glucophage",
+        "generic_name": "Metformin Hydrochloride",
+        "dosage": "500 mg",
+        "form": "Oral tablet",
+        "frequency_instructions": "Take 1 tablet by mouth twice daily with meals.",
+        "aliases": [
+          "glucophage",
+          "metformin",
+          "metformin hydrochloride"
+        ],
+        "generic_aliases": [
+          "metformin hydrochloride",
+          "metformin hcl"
+        ],
+        "form_aliases": [
+          "oral tablet",
+          "tablet"
+        ],
+        "direction_groups": [
+          [
+            "1 tablet",
+            "one tablet"
+          ],
+          [
+            "twice daily",
+            "twice a day",
+            "two times daily",
+            "2 times daily",
+            "bid"
+          ],
+          [
+            "with meals",
+            "with food"
+          ]
+        ]
+      },
+      {
+        "brand_name": "Zestril",
+        "generic_name": "Lisinopril",
+        "dosage": "10 mg",
+        "form": "Oral tablet",
+        "frequency_instructions": "Take 1 tablet by mouth once daily in the morning.",
+        "aliases": [
+          "zestril",
+          "lisinopril"
+        ],
+        "generic_aliases": [
+          "lisinopril"
+        ],
+        "form_aliases": [
+          "oral tablet",
+          "tablet"
+        ],
+        "direction_groups": [
+          [
+            "1 tablet",
+            "one tablet"
+          ],
+          [
+            "once daily",
+            "once a day",
+            "one time daily",
+            "1 time daily",
+            "qd"
+          ],
+          [
+            "morning"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "RX-002",
+    "title": "Demonstration Prescription B",
+    "file": "05_amoxicillin_albuterol_prescription.pdf",
+    "document_type": "PRESCRIPTION",
+    "expected_http": 200,
+    "biomarkers": [],
+    "medicines": [
+      {
+        "brand_name": "Amoxil",
+        "generic_name": "Amoxicillin",
+        "dosage": "500 mg",
+        "form": "Oral capsule",
+        "frequency_instructions": "Take 1 capsule by mouth every 8 hours for 7 days.",
+        "aliases": [
+          "amoxil",
+          "amoxicillin"
+        ],
+        "generic_aliases": [
+          "amoxicillin"
+        ],
+        "form_aliases": [
+          "oral capsule",
+          "capsule"
+        ],
+        "direction_groups": [
+          [
+            "1 capsule",
+            "one capsule"
+          ],
+          [
+            "every 8 hours",
+            "q8h",
+            "8-hour intervals"
+          ],
+          [
+            "7 days",
+            "seven days",
+            "one week",
+            "1 week"
+          ]
+        ]
+      },
+      {
+        "brand_name": "Ventolin HFA",
+        "generic_name": "Albuterol Sulfate",
+        "dosage": "90 mcg/actuation",
+        "form": "Metered-dose inhaler",
+        "frequency_instructions": "Inhale 2 puffs every 4 to 6 hours as needed for wheezing.",
+        "aliases": [
+          "ventolin hfa",
+          "ventolin",
+          "albuterol",
+          "albuterol sulfate"
+        ],
+        "generic_aliases": [
+          "albuterol sulfate",
+          "albuterol sulphate"
+        ],
+        "form_aliases": [
+          "metered-dose inhaler",
+          "inhaler",
+          "metered dose inhaler",
+          "inhalation aerosol"
+        ],
+        "direction_groups": [
+          [
+            "2 puffs",
+            "two puffs"
+          ],
+          [
+            "every 4 to 6 hours",
+            "every 4-6 hours",
+            "q4-6h"
+          ],
+          [
+            "as needed",
+            "prn"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "NEG-001",
+    "title": "Grocery List - Not a Medical Document",
+    "file": "06_non_medical_rejection.pdf",
+    "document_type": null,
+    "expected_http": 422,
+    "biomarkers": [],
+    "medicines": []
+  },
+  {
+    "id": "INVALID-001",
+    "file": "07_invalid_pdf.bin",
+    "upload_name": "invalid.pdf",
+    "expected_http": 400,
+    "document_type": null
+  },
+  {
+    "id": "EMPTY-001",
+    "file": "08_empty_image.bin",
+    "upload_name": "empty.png",
+    "expected_http": 400,
+    "document_type": null
+  }
+]

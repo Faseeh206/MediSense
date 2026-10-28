@@ -1,0 +1,8 @@
+@font-face {
+    font-family:'Onest'; font-style:normal; font-weight:400 700; font-display:swap;
+    src:url('/fonts/onest/onest-latin-variable.woff2') format('woff2');
+}
+:root { --font-heading:'Onest','Manrope',Arial,sans-serif; }
+h1,h2,h3,h4,h5,h6 { font-family:var(--font-heading)!important; font-weight:550; letter-spacing:-.035em; }
+/* Keep the page's established type scale and the body font; change only heading roles. */
+h1 em,h2 em,h3 em,h4 em,h5 em,h6 em { font-family:inherit; }
