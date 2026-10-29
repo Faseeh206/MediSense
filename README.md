@@ -25,10 +25,6 @@
   <code>React + Vite</code> &nbsp; <code>FastAPI</code> &nbsp; <code>SQLite / PostgreSQL</code>
 </p>
 
-![The MediSense homepage: a warm glass capsule and DNA scene alongside the headline “Your results, made clear.”](docs/assets/medisense-home.png)
-
-<p align="center"><sub>Actual application capture. The hero uses a scroll-controlled image sequence.</sub></p>
-
 ## Watch MediSense
 
 https://github.com/user-attachments/assets/3ff8b286-e4eb-4e2c-9cb5-9242625ddaa2
