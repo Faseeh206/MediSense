@@ -29,6 +29,12 @@
 
 <p align="center"><sub>Actual application capture. The hero uses a scroll-controlled image sequence.</sub></p>
 
+## Watch MediSense
+
+https://github.com/user-attachments/assets/3ff8b286-e4eb-4e2c-9cb5-9242625ddaa2
+
+A 1080p introduction with music, the capsule and DNA visuals, and illustrative sample-report screens.
+
 ## Understanding comes first
 
 A medical document can leave someone with more questions than answers. MediSense brings its measurements, medicine details and explanations into one readable experience, with useful questions to take into an appointment.
