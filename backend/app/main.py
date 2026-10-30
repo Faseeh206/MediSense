@@ -19,9 +19,10 @@ from sqlalchemy.orm import Session
 
 from app.config import settings, usable_api_key
 from app import database
-from app.database import MedicalRecord, delete_record_synced, get_active_db_type, get_db, init_db, save_record_synced, sync_sqlite_to_postgres
-from app.access import analysis_limiter, client_owner, optional_owner, require_admin
+from app.database import MedicalRecord, delete_record_synced, get_active_db_type, get_db, get_analysis_db, init_db, save_record_synced, sync_sqlite_to_postgres
+from app.access import analysis_client_address, analysis_limiter, client_owner, optional_owner, require_admin
 from app.gemini_service import GeminiService
+from app.openrouter_service import OpenRouterService
 from app.medicine_information import medicine_information_context
 from app.schemas import AnalysisServiceError, DocumentAnalysis
 from app.specialist_guide import determine_specialist
@@ -35,7 +36,11 @@ MANDATORY_DISCLAIMER = 'MediSense is an informational aid, not medical advice. A
 
 @asynccontextmanager
 async def lifespan(_app):
-    await run_in_threadpool(init_db)
+    if settings.IS_VERCEL and not settings.DATABASE_URL:
+        database.ACTIVE_DB_TYPE = 'Not configured'
+        logger.warning('API started without a database; history is unavailable and stateless analysis is %s', settings.stateless_analysis_enabled)
+    else:
+        await run_in_threadpool(init_db)
     yield
     if database.engine is not None:
         database.engine.dispose()
@@ -56,18 +61,27 @@ async def add_disclaimer_header(request, call_next):
 
 
 @app.get('/api/health')
-def health_check(request: Request, db: Session = Depends(get_db)):
+def health_check(request: Request):
     connected = False; own_count = None
-    try:
-        db.execute(text('SELECT 1')); connected = True
-        owner = optional_owner(request)
-        if owner:
-            own_count = db.query(MedicalRecord).filter_by(owner_hash=owner, deleted_at=None).count()
-    except Exception as error:
-        db.rollback(); logger.error('Database health check failed (%s)', type(error).__name__)
+    if database.SessionLocal is not None:
+        with database.SessionLocal() as db:
+            try:
+                db.execute(text('SELECT 1')); connected = True
+                owner = optional_owner(request)
+                if owner:
+                    own_count = db.query(MedicalRecord).filter_by(owner_hash=owner, deleted_at=None).count()
+            except Exception as error:
+                db.rollback(); logger.error('Database health check failed (%s)', type(error).__name__)
     return {'status': 'online' if connected else 'degraded', 'service': settings.PROJECT_NAME, 'version': settings.VERSION,
-            'database': {'connected': connected, 'engine': get_active_db_type(), 'total_records': own_count, 'record_scope': 'this_browser'},
-            'analysis_configured': usable_api_key(settings.GEMINI_API_KEY),
+            'database': {'connected': connected, 'engine': get_active_db_type(), 'total_records': own_count, 'record_scope': 'this_browser',
+                         **({'message': 'Set DATABASE_URL to a PostgreSQL server reachable from this backend.'} if settings.IS_VERCEL and not settings.DATABASE_URL else {})},
+            'analysis_configured': settings.analysis_configured, 'max_upload_bytes': settings.MAX_FILE_SIZE_BYTES,
+            'analysis_provider': settings.ANALYSIS_PROVIDER,
+            'analysis_model': settings.OPENROUTER_MODEL if settings.ANALYSIS_PROVIDER == 'openrouter' else settings.GEMINI_MODEL,
+            'requires_demo_document': settings.requires_demo_document,
+            'history_available': connected,
+            'analysis_mode': 'stateless_demo' if settings.stateless_analysis_enabled else 'with_history',
+            'rate_limit_scope': 'instance' if settings.stateless_analysis_enabled else 'database',
             'medication_information_provider': 'AI-powered analysis', 'disclaimer': MANDATORY_DISCLAIMER}
 
 
@@ -146,7 +160,8 @@ def validate_document(contents, extension):
 
 @app.post('/api/analyze')
 async def analyze_document(request: Request, file: UploadFile = File(...), document_type: Optional[str] = Form(None),
-    x_gemini_key: Optional[str] = Header(None, alias='X-Gemini-Key'), owner: str = Depends(client_owner), db: Session = Depends(get_db)):
+    demo_document_confirmed: bool = Form(False),
+    x_gemini_key: Optional[str] = Header(None, alias='X-Gemini-Key'), owner: str = Depends(client_owner), db: Optional[Session] = Depends(get_analysis_db)):
     filename = re.sub(r'[\x00-\x1f\x7f]', '', (file.filename or '').replace('\\','/').rsplit('/',1)[-1]).strip()
     extension = Path(filename).suffix.lower()
     if extension not in settings.ALLOWED_EXTENSIONS:
@@ -156,7 +171,7 @@ async def analyze_document(request: Request, file: UploadFile = File(...), docum
     finally:
         await file.close()
     if len(contents) > settings.MAX_FILE_SIZE_BYTES:
-        raise HTTPException(413, 'The document exceeds the 10 MB limit.')
+        raise HTTPException(413, f'The document exceeds the {settings.MAX_FILE_SIZE_BYTES / (1024 * 1024):g} MB limit.')
     mime_type = await run_in_threadpool(validate_document, contents, extension)
     hint = None
     if document_type:
@@ -168,11 +183,17 @@ async def analyze_document(request: Request, file: UploadFile = File(...), docum
         elif raw not in {'AUTO','AUTO_DETECT'}:
             raise HTTPException(400, 'Please select Lab report, Prescription, or automatic detection.')
     active_key = x_gemini_key or settings.GEMINI_API_KEY
-    if not usable_api_key(active_key):
+    configured = settings.analysis_configured or (settings.ANALYSIS_PROVIDER == 'gemini' and usable_api_key(active_key))
+    if not configured:
         raise HTTPException(503, 'Document analysis is not configured. Please contact the site administrator.')
-    analysis_limiter.admit(request.client.host if request.client else None)
+    if settings.requires_demo_document and not demo_document_confirmed:
+        raise HTTPException(400, 'This free demonstration accepts fictional sample documents only. Confirm that the document contains no personal or confidential information.')
+    await run_in_threadpool(analysis_limiter.admit, analysis_client_address(request))
     try:
-        raw_result = await GeminiService.analyze_document(file_bytes=contents, mime_type=mime_type, hint_type=hint, custom_key=active_key)
+        if settings.ANALYSIS_PROVIDER == 'openrouter':
+            raw_result = await OpenRouterService.analyze_document(file_bytes=contents, mime_type=mime_type, hint_type=hint)
+        else:
+            raw_result = await GeminiService.analyze_document(file_bytes=contents, mime_type=mime_type, hint_type=hint, custom_key=active_key)
         analysis = DocumentAnalysis.model_validate(raw_result).model_dump()
     except AnalysisServiceError as error:
         raise HTTPException(error.status_code, str(error)) from None
@@ -190,6 +211,10 @@ async def analyze_document(request: Request, file: UploadFile = File(...), docum
     if await request.is_disconnected():
         raise HTTPException(499, 'The document request was cancelled.')
     safe_name = filename if len(filename) <= 255 else Path(filename).stem[:240] + extension
+    unsaved_result = {'id': None, 'created_at': None, 'file_name': safe_name, 'record_type': analysis['document_type'], 'extracted_data': extracted, 'api_enriched_data': enriched, 'simple_explanation': analysis['simple_explanation'], 'saved_to_history': False,
+                      'persistence_warning': 'Your explanation is ready, but history is unavailable. You can still print or share it.'}
+    if db is None:
+        return {**unsaved_result, 'specialist_recommendation': specialist, 'disclaimer': MANDATORY_DISCLAIMER}
     try:
         def persist():
             record = save_record_synced(db=db, file_name=safe_name, record_type=analysis['document_type'], extracted_data=json.dumps(extracted), api_enriched_data=json.dumps(enriched), simple_explanation=analysis['simple_explanation'], owner_hash=owner)
@@ -210,6 +235,8 @@ if assets.is_dir():
 
 @app.get('/{full_path:path}', include_in_schema=False)
 async def serve_frontend(full_path: str):
+    if settings.IS_VERCEL and full_path == '':
+        return {'service': settings.PROJECT_NAME + ' API', 'health': '/api/health'}
     if full_path == 'api' or full_path.startswith('api/'):
         raise HTTPException(404, 'API route not found.')
     root = Path(frontend_dist).resolve()

@@ -2,7 +2,7 @@ import SpringText from './ui/spring-text';
 import { useEffect, useRef, useState } from 'react';
 import { Activity, Pill, ScanLine, Check, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { uploadAndAnalyze } from '../utils/api';
-import { validateUpload } from '../utils/validateUpload';
+import { resolveUploadLimit, validateUpload } from '../utils/validateUpload';
 import { FileUploadCard } from './ui/file-upload-card';
 import { toast } from 'sonner';
 import AnalyzeDocumentButton from './ui/analyze-document-button';
@@ -14,11 +14,13 @@ const TYPES = [
     { id: 'PRESCRIPTION', label: 'Prescription', detail: 'Medicines & treatment notes', icon: Pill },
 ];
 
-export default function UploadZone({ onAnalysisSuccess, onSelectSample, activeSampleKey }) {
+export default function UploadZone({ onAnalysisSuccess, onSelectSample, activeSampleKey, maxUploadBytes, requiresDemoDocument = true, historyAvailable = true }) {
+    const maximumBytes = resolveUploadLimit(maxUploadBytes);
     const [type, setType] = useState(''), [file, setFile] = useState(null);
     const [busy, setBusy] = useState(false), [error, setError] = useState('');
     const [status, setStatus] = useState('ready'), [progress, setProgress] = useState(null);
     const [sampleBusy, setSampleBusy] = useState(false);
+    const [demoConfirmed, setDemoConfirmed] = useState(false);
     const locked = busy || sampleBusy;
     const running = useRef(false), request = useRef(null);
     useEffect(() => () => {
@@ -28,24 +30,27 @@ export default function UploadZone({ onAnalysisSuccess, onSelectSample, activeSa
         if (running.current) return;
         if (incoming.length > 1) { setError('Please select one document at a time.'); return; }
         if (!incoming.length) return;
-        const message = validateUpload(incoming[0]);
+        const message = validateUpload(incoming[0], maximumBytes);
         setError(message);
         if (message) return;
-        setFile(incoming[0]); setStatus('ready'); setProgress(null);
+        setFile(incoming[0]); setStatus('ready'); setProgress(null); setDemoConfirmed(false);
     };
     const remove = () => {
         if (running.current) return;
-        setFile(null); setError(''); setStatus('ready'); setProgress(null);
+        setFile(null); setError(''); setStatus('ready'); setProgress(null); setDemoConfirmed(false);
     };
     const submit = async () => {
         if (!file || running.current) return;
+        if (requiresDemoDocument && !demoConfirmed) { setError('Confirm that this is a fictional sample with no personal or confidential information.'); return; }
+        const message = validateUpload(file, maximumBytes);
+        if (message) { setError(message); return; }
         running.current = true;
         const controller = new AbortController();
         request.current = controller;
         setBusy(true); setError(''); setStatus('uploading'); setProgress(null);
         try {
             const result = await uploadAndAnalyze({
-                file, documentType: type, signal: controller.signal,
+                file, documentType: type, signal: controller.signal, demoDocumentConfirmed: demoConfirmed,
                 onUploadProgress: value => setProgress(value), onUploaded: () => setStatus('analyzing'),
             });
             if (controller.signal.aborted) return;
@@ -85,14 +90,16 @@ export default function UploadZone({ onAnalysisSuccess, onSelectSample, activeSa
         </div>
         <div className="intake-workspace">
             <div className="intake-workspace-meta"><span>No account needed</span><span>One document at a time</span></div>
-            <FileUploadCard files={selectedFiles} onFilesChange={select} onFileRemove={remove} description={description} disabled={locked} error={error}
+            {requiresDemoDocument && <p className="intake-demo-policy">Free demonstration: fictional sample documents only. Do not upload real patient records or personal or confidential information.</p>}
+            <FileUploadCard files={selectedFiles} onFilesChange={select} onFileRemove={remove} description={description} disabled={locked} error={error} maxUploadBytes={maximumBytes}
                 footer={file ? <>
-                    {status === 'completed' ? <AnalyzeDocumentButton href="#results-section">View explanation</AnalyzeDocumentButton> : <AnalyzeDocumentButton disabled={locked} onClick={submit}>
+                    {requiresDemoDocument && status !== 'completed' && <label className="intake-demo-consent"><input type="checkbox" checked={demoConfirmed} disabled={locked} onChange={event => setDemoConfirmed(event.target.checked)} /><span>I confirm this is a fictional sample with no personal or confidential information.</span></label>}
+                    {status === 'completed' ? <AnalyzeDocumentButton href="#results-section">View explanation</AnalyzeDocumentButton> : <AnalyzeDocumentButton disabled={locked || requiresDemoDocument && !demoConfirmed} onClick={submit}>
                         {busy ? status === 'uploading' ? 'Uploading document…' : 'Analyzing document…' : status === 'error' ? 'Try analysis again' : 'Analyze document'}
                     </AnalyzeDocumentButton>}
                     <p className="intake-send-note">{status === 'completed' ? 'Analysis complete. Your explanation is ready to view.' : busy ? status === 'uploading' ? 'Sending your document to the analysis service.' : 'Upload received. Your explanation is being prepared.' : 'Ready to send when you choose “Analyze document.”'}</p>
                 </> : <p className="intake-local-note"><span aria-hidden="true" />Your file stays on this page until you choose to analyze it.</p>} />
-            <p className="intake-history-note">Your document is sent for analysis when you choose “Analyze document.” Results are available in your scan history.</p>
+            <p className="intake-history-note">Your document is sent for analysis when you choose “Analyze document.” {historyAvailable ? 'Results are available in your scan history.' : 'History is unavailable in this demo. Print or download your explanation to keep it.'}</p>
         </div>
         <SampleDocuments onSelectSample={onSelectSample} onLoadingChange={setSampleBusy} disabled={busy} activeSampleKey={activeSampleKey} />
         <p className="intake-clinician-note">For understanding and conversation. Always review your results with a qualified clinician.</p>

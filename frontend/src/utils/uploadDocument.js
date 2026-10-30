@@ -1,3 +1,5 @@
+import { apiErrorMessage } from './apiErrors.js';
+
 // Real transfer progress. Upload completion is distinct from analysis completion.
 export function requestDocumentAnalysis({ url, formData, signal, onUploadProgress, onUploaded, headers = {} }) {
     return new Promise((resolve, reject) => {
@@ -20,7 +22,7 @@ export function requestDocumentAnalysis({ url, formData, signal, onUploadProgres
         xhr.onload = () => {
             const data = xhr.response;
             if (xhr.status < 200 || xhr.status >= 300) {
-                fail(new Error(typeof data?.detail === 'string' ? data.detail : 'Analysis failed. Please try again.'));
+                fail(new Error(apiErrorMessage(data, xhr.status)));
                 return;
             }
             if (!data || typeof data !== 'object') { fail(new Error('The analysis service returned an unreadable response. Please try again.')); return; }

@@ -1,0 +1,15 @@
+.env
+.env.*
+.venv/
+venv/
+.audit/
+.agents/
+.vercel/
+skills-lock.json
+tests/
+**/__pycache__/
+**/*.pyc
+*.db
+*.db-*
+*.sqlite*
+*.log

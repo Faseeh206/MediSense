@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { HTMLMotionProps } from 'framer-motion';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import './file-upload-card.css';
+import { uploadLimitLabel } from '../../utils/validateUpload';
 
 export interface UploadedFile {
     id: string;
@@ -24,6 +25,7 @@ interface FileUploadCardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
     disabled?: boolean;
     error?: string;
     footer?: React.ReactNode;
+    maxUploadBytes?: number;
 }
 function formatFileSize(bytes: number) {
     if (bytes < 1024) return `${bytes} bytes`;
@@ -33,7 +35,7 @@ function formatFileSize(bytes: number) {
 export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardProps>(
     ({ className = '', files = [], onFilesChange, onFileRemove, onClose,
         heading = 'Upload your document', description = 'Choose a lab report or prescription to begin.',
-        disabled = false, error, footer, ...props }, ref) => {
+        disabled = false, error, footer, maxUploadBytes, ...props }, ref) => {
         const [isDragging, setIsDragging] = React.useState(false);
         const fileInputRef = React.useRef<HTMLInputElement>(null), dragDepth = React.useRef(0);
         const reduce = useReducedMotion();
@@ -81,7 +83,7 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
                     <p className="fuc-drop-title">{transferring ? 'Uploading your document…' : analyzing ? 'Making sense of your document…' : dragging ? 'Drop your document here.' : 'Choose a file or drag & drop it here.'}</p>
                     <p className="fuc-drop-help" id={helpId}>{transferring
                         ? transferProgress === null ? 'Sending your document to the analysis service.' : `${transferProgress}% transferred · ${formatFileSize(activeFile!.file.size)}`
-                        : analyzing ? 'Upload complete. Preparing your explanation.' : 'PDF, JPG or PNG · Up to 10 MB · One document'}</p>
+                        : analyzing ? 'Upload complete. Preparing your explanation.' : `PDF, JPG or PNG · Up to ${uploadLimitLabel(maxUploadBytes)} · One document`}</p>
                     <button type="button" className="fuc-browse" disabled={disabled} aria-describedby={error ? errorId : helpId}
                         onClick={() => fileInputRef.current?.click()}>{files.length ? 'Choose another file' : 'Browse file'}</button>
                 </div>

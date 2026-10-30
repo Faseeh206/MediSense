@@ -1,0 +1,23 @@
+# Frontend deployment. Deploy the backend separately from backend/.
+backend/
+brag-output*/
+.agents/
+.cleanup-backup/
+.codex/
+.git/
+.github/
+.vercel/
+.vscode/
+docs/
+scripts/
+test_reports/
+node_modules/
+dist/
+.env
+.env.*
+skills-lock.json
+tests/
+*.db
+*.db-*
+*.sqlite*
+*.log

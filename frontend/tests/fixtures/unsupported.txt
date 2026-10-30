@@ -1,1 +1,0 @@
-MediSense upload validation test. No personal or clinical information.

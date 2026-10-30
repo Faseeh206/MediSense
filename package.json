@@ -1,6 +1,7 @@
 {
   "name": "medisense",
   "version": "2.4.0",
+  "license": "MIT",
   "private": true,
   "description": "MediSense - Clinical Lab Report & Medicine Explainer",
   "scripts": {
@@ -8,8 +9,8 @@
     "start": "node scripts/project.mjs start",
     "dev": "node scripts/project.mjs dev",
     "build": "npm --prefix frontend run build",
-    "test": "node scripts/project.mjs test",
-    "lint": "npm --prefix frontend run lint"
+    "lint": "npm --prefix frontend run lint",
+    "test": "node --check scripts/project.mjs"
   },
   "engines": {
     "node": ">=22.12.0"

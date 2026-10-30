@@ -17,13 +17,15 @@
   <a href="#quick-start">Run locally</a> &nbsp;·&nbsp;
   <a href="#what-you-can-do">Explore features</a> &nbsp;·&nbsp;
   <a href="#how-it-works">Architecture</a> &nbsp;·&nbsp;
-  <a href="#testing">Testing</a> &nbsp;·&nbsp;
+  <a href="#checks">Checks</a> &nbsp;·&nbsp;
   <a href="#configuration">Configuration</a>
 </p>
 
 <p align="center">
-  <code>React + Vite</code> &nbsp; <code>FastAPI</code> &nbsp; <code>SQLite / PostgreSQL</code>
+  <code>React + Vite</code> &nbsp; <code>FastAPI</code> &nbsp; <code>NVIDIA Nemotron</code> &nbsp; <code>OpenRouter</code>
 </p>
+
+<p align="center"><a href="LICENSE">MIT licensed · Open source</a></p>
 
 ## Watch MediSense
 
@@ -37,6 +39,10 @@ A medical document can leave someone with more questions than answers. MediSense
 
 The project combines document analysis with an interface built around clarity: warm colors, careful typography, responsive layouts and motion that can be reduced or switched off.
 
+**Powered by NVIDIA Nemotron through OpenRouter.** Uploaded demonstration documents are read by `nvidia/nemotron-3.5-super-vl:free`; FastAPI validates the structured response before showing measurements, medicine information and a plain-language explanation. The model runs on the backend, with no API key exposed to the browser.
+
+> **Free-model demo:** use fictional documents only, with no personal or confidential information. The [free model's data policy](https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free) permits input logging and excludes personal or confidential data. MediSense requires confirmation before sending an upload. Built-in sample reports remain available without calling an AI service.
+
 > **Purpose:** MediSense supports understanding and conversation. It does not diagnose conditions, prescribe treatment, or replace a qualified clinician.
 
 ## What you can do
@@ -48,10 +54,10 @@ The project combines document analysis with an interface built around clarity: w
 | **Try before uploading** | Four illustrative report examples that work without an API key and do not create saved patient records. |
 | **Prepare for an appointment** | Suggested clinician questions and specialist guidance for discussion. |
 | **Keep the explanation** | A dedicated print summary, browser “Save as PDF,” text download, copying and sharing where supported. |
-| **Return to a scan** | The latest 15 records for the current browser, with individual retrieval and deletion. |
+| **Return to a scan** | With a database connected, the latest 15 records for the current browser, with individual retrieval and deletion. The hosted demo can run without saved history. |
 | **Choose how it feels** | Light/dark themes, responsive layouts, a motion preference control and system reduced-motion support. |
 
-**Accepted documents:** PDF, JPG/JPEG and PNG · **Maximum size:** 10 MB · **PDF limit:** 30 pages by default.
+**Accepted documents:** PDF, JPG/JPEG and PNG · **Maximum size:** 10 MB locally, 4 MB on Vercel · **PDF limit:** 30 pages by default.
 
 ## Quick start
 
@@ -75,18 +81,22 @@ SQLite is the default for a new installation. You do not need PostgreSQL, pgAdmi
 
 ### 3. Enable document analysis
 
-For real uploads, open `backend/.env` in your editor and replace the key placeholder:
+For live analysis of fictional samples, open `backend/.env` in your editor and replace the key placeholder:
 
 ```dotenv
-GEMINI_API_KEY=your_actual_key_here
-GEMINI_MODEL=gemini-3-flash-preview
+ANALYSIS_PROVIDER=openrouter
+OPENROUTER_API_KEY=your_openrouter_key_here
+OPENROUTER_MODEL=nvidia/nemotron-3.5-super-vl:free
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 DATABASE_BACKEND=sqlite
 DATABASE_URL=
 ```
 
-The model must be available to your Google AI Studio project, and the project must have quota. If necessary, select an available model in this private configuration. Keep the key on the backend; never place it in a `VITE_` variable or commit it.
+Create a key in your [OpenRouter account](https://openrouter.ai/settings/keys). The selected free NVIDIA Nemotron model must be available and your account must have remaining request quota. This integration accepts free Nemotron model IDs and sets a zero-price inference cap; it does not fall back to paid models. Free availability and request limits can change.
 
-**Just exploring?** You can leave the key unset and use the built-in samples, themes and interface. The current analysis integration uses Gemini; OpenRouter is not integrated.
+Keep the key on the backend; never place it in a `VITE_` variable or commit it. Upload only fictional documents and confirm this in the upload form before choosing **Analyze document**.
+
+**Just exploring?** Leave the key unset and use the built-in samples, themes and interface. Legacy Gemini support remains available only when explicitly selected with `ANALYSIS_PROVIDER=gemini`; Nemotron is the default and there is no automatic provider fallback.
 
 ### 4. Start MediSense
 
@@ -124,16 +134,17 @@ Quote paths containing spaces. An existing virtual environment is reused. Do not
 ```mermaid
 flowchart LR
     UI["React interface"] -->|"PDF or image"| API["FastAPI · validation"]
-    API -->|"One analysis request"| AI["Configured AI model"]
+    API -->|"Fictional document · private key"| ROUTER["OpenRouter"]
+    ROUTER --> AI["NVIDIA Nemotron · free vision model"]
     AI -->|"Structured response"| API
-    API -->|"Browser-scoped records"| DB[("SQLite / PostgreSQL")]
+    API -.->|"Optional browser-scoped history"| DB[("SQLite / PostgreSQL")]
     API -->|"Results and explanation"| UI
 ```
 
-1. **Choose a document.** The interface checks the selected file. The backend validates its size, extension, actual signature and PDF page count before analysis.
-2. **Read and validate.** The analysis service returns structured data. Pydantic validates the result; unreadable or non-medical inputs are rejected instead of saved as successful scans.
+1. **Choose a fictional document.** The interface checks the selected file and requires confirmation that it contains no personal or confidential information. The backend validates its size, extension, actual signature and PDF page count before analysis.
+2. **Read and validate.** NVIDIA Nemotron reads the document through OpenRouter and returns structured data. Pydantic validates the result; unreadable or non-medical inputs are rejected instead of saved as successful scans.
 3. **Explain with context.** Prescription information is generated in the same request and kept separate from the extracted directions. General adult reference guides are shown only for supported tests and matching units when a printed range is missing.
-4. **Keep useful results.** Successful analyses are saved to the chosen database and returned to the interface for reading, printing or sharing. A failed history save is disclosed instead of presented as successful.
+4. **Keep useful results.** Results return for reading, printing or sharing. When a database is connected, successful analyses are saved to browser-scoped history. Without a hosted database, the Vercel demo returns explanations without saving them and makes that limitation visible.
 
 ### The interface, considered
 
@@ -146,9 +157,9 @@ The hero scrubs through **240 source frames at 1920 × 1080**, with a bounded de
 | Interface | React 19, Vite 8, reusable JSX/TSX components and CSS design tokens |
 | Motion | GSAP / ScrollTrigger, Lenis, Anime.js, Framer Motion and React Spring |
 | API and validation | FastAPI, Pydantic, HTTPX and pypdf |
-| Document analysis | Gemini API, configured and called on the server |
+| Document analysis | NVIDIA Nemotron 3.5 Super VL through OpenRouter, called on the server |
 | Storage | SQLAlchemy with SQLite locally or optional PostgreSQL |
-| Checks | Python `unittest`, Node's test runner, Oxlint and Vite builds |
+| Checks | Oxlint and Vite builds |
 
 ## Project structure
 
@@ -156,19 +167,16 @@ The hero scrubs through **240 source frames at 1920 × 1080**, with a bounded de
 MediSense/
 ├── backend/
 │   ├── app/                 API, analysis, validation, storage and sample data
-│   ├── tests/               Isolated backend tests
 │   ├── .env.example         Safe configuration template
 │   └── requirements.txt     Pinned runtime dependencies
 ├── frontend/
 │   ├── src/                 Components, styles, hooks and utilities
-│   ├── public/
-│   │   ├── hero-frames/     The 240-frame hero sequence
-│   │   ├── brand/           Production logo and favicon assets
-│   │   └── fonts/           Local heading font and license
-│   └── tests/               Frontend behavior and utility tests
-├── docs/assets/             README wordmarks and application capture
+│   └── public/
+│       ├── hero-frames/     Original frames and local static fallback
+│       ├── brand/           Production logo and favicon assets
+│       └── fonts/           Local heading font and license
+├── docs/assets/             README wordmarks
 ├── scripts/                 Cross-platform setup and launch helpers
-├── test_reports/            Fictional PDFs, ground truth and live benchmark
 └── .github/workflows/       Windows and Linux checks for future pushes
 ```
 
@@ -185,11 +193,11 @@ The API runs at **[localhost:8000](http://127.0.0.1:8000)** and Vite at **[local
 | `npm run setup` | Install dependencies and create missing local configuration |
 | `npm start` | Build and serve the complete application |
 | `npm run dev` | Start the frontend and backend for development |
-| `npm test` | Run backend and frontend tests |
 | `npm run lint` | Check frontend source |
+| `npm test` | Check the cross-platform startup helper's JavaScript syntax |
 | `npm run build` | Create the production frontend in `frontend/dist` |
 
-## Testing
+## Checks
 
 ```sh
 npm test
@@ -197,30 +205,7 @@ npm run lint
 npm run build
 ```
 
-Backend tests use temporary SQLite databases and mocked AI responses. They do not consume provider quota or connect to a live PostgreSQL database. Frontend tests cover frame buffering, reverse scroll behavior, private history identity, upload handling, result filters, reference guides, sample reports, printing/sharing utilities and other interaction logic.
-
-**Local handoff check · 28 October 2026:** 29 backend tests and 57 frontend tests passed. Lint and production builds passed, and a clean Windows installation was checked without private credentials or an existing database. The GitHub Actions workflow is configured for Windows and Linux; remote CI has not run yet.
-
-<details>
-<summary><strong>Run the optional live synthetic-document benchmark</strong></summary>
-
-The [test_reports](test_reports/) folder includes fictional lab reports, fictional prescriptions and negative inputs. Expected extraction values are recorded in [ground_truth.json](test_reports/ground_truth.json).
-
-This optional benchmark calls the configured analysis service and **consumes API quota**:
-
-```sh
-# Windows
-backend/.venv/Scripts/python.exe test_reports/run_accuracy_tests.py
-
-# macOS / Linux
-backend/.venv/bin/python test_reports/run_accuracy_tests.py
-```
-
-It writes its own SQLite database, result files and an accuracy report. These outputs are ignored by Git. It does not use your application database or initialize PostgreSQL.
-
-These clean synthetic inputs check extraction and application behavior. They do not establish clinical accuracy, handwriting reliability or diagnostic safety.
-
-</details>
+GitHub Actions runs these checks on Windows and Linux. They verify startup-helper syntax, source linting and compilation; they do not establish clinical accuracy or live service availability. `npm test` is a syntax check, not a unit-test suite.
 
 ## Configuration
 
@@ -228,12 +213,17 @@ Use [backend/.env.example](backend/.env.example) as the reference. Your actual `
 
 | Setting | What it controls |
 | :--- | :--- |
-| `GEMINI_API_KEY` | Backend-only access to document analysis |
-| `GEMINI_MODEL` | A model available to the configured provider project |
+| `ANALYSIS_PROVIDER` | `openrouter` by default; `gemini` only for explicit legacy use |
+| `OPENROUTER_API_KEY` | Private, backend-only OpenRouter key |
+| `OPENROUTER_MODEL` | `nvidia/nemotron-3.5-super-vl:free`; must be a free NVIDIA Nemotron model |
+| `OPENROUTER_BASE_URL` | `https://openrouter.ai/api/v1`; only the official endpoint is accepted |
+| `OPENROUTER_TIMEOUT_SECONDS` | Analysis timeout, 90 seconds by default |
 | `DATABASE_BACKEND` | `sqlite` for local setup or `postgres` for PostgreSQL |
 | `DATABASE_URL` | Optional connection URL; leave blank for the standard SQLite setup or individual PostgreSQL fields |
 | `ALLOW_SQLITE_FALLBACK` | Whether PostgreSQL failures may fall back to local storage |
-| `ANALYSES_PER_HOUR` | The process-local, per-IP analysis allowance |
+| `ALLOW_STATELESS_ANALYSIS` | Allow Vercel to analyze fictional samples when no `DATABASE_URL` is configured; no saved history |
+| `ANALYSES_PER_HOUR` | Per-IP rolling-hour allowance; database-shared with storage, per instance in stateless mode |
+| `MAX_UPLOAD_BYTES` | Upload allowance: 10 MB locally, 4 MB by default on Vercel |
 | `CORS_ORIGINS` | Exact allowed frontend origins when hosting separately |
 | `ADMIN_API_TOKEN` | Optional private token; administrative endpoints are disabled while blank |
 
@@ -264,14 +254,42 @@ FastAPI serves `frontend/dist` when a build exists, so the frontend and API can 
 
 For separate frontend hosting, set `VITE_API_BASE` to the backend origin, without `/api`, before building. Set `CORS_ORIGINS` to the exact frontend origin and `ALLOW_LOCAL_ORIGINS=False` on the backend. `VITE_API_PROXY_TARGET` can override the development proxy target.
 
-Use HTTPS, persistent storage, private secret management and deployment-appropriate access, retention and backup policies. The built-in analysis limiter is process-local; deployments with multiple instances need a shared or edge limiter.
+Use HTTPS, private secret management and deployment-appropriate access, retention and backup policies. With a database, the analysis limiter stores hashed client addresses and request timestamps so instances share the same allowance. In stateless mode, the limiter is best-effort per instance; OpenRouter's separate account quota also applies.
+
+**Vercel backend:** use `backend` as the project root, the FastAPI framework preset and its automatic build settings. The included `backend/vercel.json` configures `app/main.py` with a 120-second maximum duration. Python 3.12 is selected by `.python-version`.
+
+Set these in the backend project's Vercel environment settings before deploying:
+
+| Variable | Value |
+| :--- | :--- |
+| `DATABASE_BACKEND` | `postgres` |
+| `DATABASE_URL` | Leave unset for demo analysis without history, or supply your own hosted PostgreSQL connection with SSL |
+| `ALLOW_SQLITE_FALLBACK` | `False` |
+| `ALLOW_STATELESS_ANALYSIS` | `True` for the demo without a database |
+| `ANALYSIS_PROVIDER` | `openrouter` |
+| `OPENROUTER_API_KEY` | Your private OpenRouter key, stored as a Secret; never use a `VITE_` prefix |
+| `OPENROUTER_MODEL` | `nvidia/nemotron-3.5-super-vl:free` |
+| `CORS_ORIGINS` | The exact public frontend origin, without a trailing slash |
+| `ALLOW_LOCAL_ORIGINS` | `False` |
+| `MAX_UPLOAD_BYTES` | `4194304` |
+
+The database on a laptop is not reachable by Vercel through `localhost`. Your local app can continue using local PostgreSQL. Set the deployed backend's `DATABASE_URL` only when you have a PostgreSQL server reachable from Vercel; no database is provisioned by this repository. Local SQLite or fallback storage is rejected on Vercel.
+
+The API can be deployed before a database is connected: `/` and illustrative samples remain available, while `/api/health` reports `degraded`, `database.connected: false`, `analysis_mode: stateless_demo` and `history_available: false`. With `ALLOW_STATELESS_ANALYSIS=True`, fictional uploads are analyzed without saving history. History endpoints remain unavailable. Set it to `False` to require storage for uploads.
+
+To enable history later, set your own reachable `DATABASE_URL` and redeploy. New tables are created automatically after a database is connected; existing laptop records are not uploaded. No database service is provisioned by this project.
+
+Vercel's direct request-body limit is 4.5 MB. This app allows 4 MB on Vercel to leave room for the upload form. The updated frontend reads that allowance from `/api/health`; publish the frontend update with `VITE_API_BASE` set to the backend origin. Local use keeps its 10 MB default.
+
+After deployment, check `/api/health` for `analysis_provider: openrouter`, the selected Nemotron model and `analysis_configured: true`, then verify a fictional image upload. Check browser-scoped history separately only when storage is connected. The deployment is not verified merely because the build succeeds.
 
 </details>
 
 ## Data, privacy and medical context
 
 - **History belongs to a browser profile.** A random browser token scopes access; the database stores its hash. There is no user login, cross-device history or account recovery. Clearing browser storage loses access, and sharing a browser profile shares its history.
-- **The AI service receives the document.** Upload content is sent for analysis only when the user chooses to analyze it. API keys remain on the backend.
+- **The AI service receives the document.** Upload content is sent through OpenRouter to the free NVIDIA endpoint only when the user confirms a fictional sample and chooses to analyze it. This is not a confidential patient-data service. API keys remain on the backend.
+- **History needs storage.** The hosted stateless demo does not save uploads or explanations to a database. The analysis provider's own data policy still applies; no-history mode is not a promise of provider-side deletion.
 - **Medicine explanations are not independent verification.** AI-generated information may be incomplete or incorrect. Confirm medicine questions with a clinician or pharmacist; original prescription details are kept separate.
 - **Reference guides are contextual.** Printed laboratory intervals take precedence. General adult examples are not universal, pediatric, pregnancy-specific or personalized ranges, and they do not assign a new clinical status.
 - **Demonstrations are identified.** Bundled reports use fictional data. Sample testimonials are illustrative rather than verified user feedback.
@@ -282,8 +300,9 @@ Use HTTPS, persistent storage, private secret management and deployment-appropri
 | Problem | Next step |
 | :--- | :--- |
 | Analysis is not configured | Add a valid backend API key and restart. You can still explore samples. |
+| Upload confirmation is required | Use a fictional sample containing no personal or confidential information, then check the confirmation box. |
 | The analysis service rejects its configuration | Confirm the key, selected model and API access for that provider project. |
-| Request limit reached | Check the provider project's quota and reset window. Another key in the same project does not create a new quota. |
+| Request limit reached | Check the OpenRouter account's free-model quota and availability. A new key in the same account does not create a new quota. |
 | PostgreSQL cannot connect | Check local credentials, or use the default SQLite configuration for evaluation. |
 | Port 8000 is busy | Stop the earlier server or run `npm start -- --port 8001`. |
 | Python or Node is missing | Install the supported runtimes, reopen the terminal and rerun setup. |

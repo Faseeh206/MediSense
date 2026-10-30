@@ -71,3 +71,6 @@
 @media(max-width:360px) { .intake-document-options { grid-template-columns:1fr; } .intake-document-options button { flex-direction:row; align-items:center; min-height:94px; gap:12px; padding:18px 14px; } .intake-document-options .intake-type-mark { position:static; } }
 @media(prefers-reduced-motion:reduce) { .intake-document-options button { transition:none; transform:none !important; } }
 html[data-reduced-motion] .intake-document-options button { transition:none; transform:none !important; }
+.intake-demo-policy { margin:0 0 16px; font-size:14px; line-height:1.6; color:var(--text-secondary); }
+.intake-demo-consent { display:flex; align-items:flex-start; gap:10px; margin:0 0 14px; font-size:13px; line-height:1.6; text-align:left; color:var(--text-secondary); cursor:pointer; }
+.intake-demo-consent input { flex:0 0 18px; width:18px; height:18px; margin-top:3px; accent-color:var(--accent-amber); }

@@ -1,9 +1,10 @@
 import json
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from fastapi import HTTPException
 from sqlalchemy import Column, DateTime, Enum, Index, Integer, String, Text, URL, create_engine, inspect, text
 from sqlalchemy.engine import make_url
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -48,6 +49,13 @@ class MedicalRecord(Base):
                 'saved_to_history': True}
 
 
+class AnalysisRateLimit(Base):
+    __tablename__ = 'analysis_rate_limits'
+    identity_hash = Column(String(64), primary_key=True)
+    events_json = Column(Text, nullable=False, default='[]')
+    updated_at = Column(DateTime, nullable=False, default=utcnow, index=True)
+
+
 engine = None
 SessionLocal = None
 ACTIVE_DB_TYPE = 'UNKNOWN'
@@ -57,17 +65,22 @@ COPY_FIELDS = ['sync_id', 'owner_hash', 'deleted_at', 'file_name', 'record_type'
 def _ensure_schema(target):
     # Additive migration: existing report content is retained. Legacy rows stay
     # unassigned and cannot be claimed by the first public visitor.
-    Base.metadata.create_all(target)
-    columns = {column['name'] for column in inspect(target).get_columns('medical_records')}
     additions = {'sync_id': 'VARCHAR(36)', 'owner_hash': 'VARCHAR(64)', 'deleted_at': 'TIMESTAMP'}
     with target.begin() as connection:
+        if target.dialect.name == 'postgresql':
+            # Serialize cold-start schema checks across all function instances.
+            connection.execute(text('SELECT pg_advisory_xact_lock(719334201)'))
+        Base.metadata.create_all(connection)
+        columns = {column['name'] for column in inspect(connection).get_columns('medical_records')}
         for name, sql_type in additions.items():
             if name not in columns:
                 connection.execute(text(f'ALTER TABLE medical_records ADD COLUMN {name} {sql_type}'))
         for row in connection.execute(text('SELECT id FROM medical_records WHERE sync_id IS NULL')).all():
             connection.execute(text('UPDATE medical_records SET sync_id=:sync_id WHERE id=:id'), {'sync_id': str(uuid.uuid4()), 'id': row[0]})
-    for index in MedicalRecord.__table__.indexes:
-        index.create(target, checkfirst=True)
+        for index in MedicalRecord.__table__.indexes:
+            index.create(connection, checkfirst=True)
+        cutoff = text("(CURRENT_TIMESTAMP AT TIME ZONE 'UTC') - INTERVAL '1 hour'") if target.dialect.name == 'postgresql' else utcnow() - timedelta(hours=1)
+        connection.execute(AnalysisRateLimit.__table__.delete().where(AnalysisRateLimit.updated_at < cutoff))
 
 
 def _sqlite_engine(url=None):
@@ -83,6 +96,13 @@ def init_db():
     if engine is not None:
         engine.dispose()
     engine = None; SessionLocal = None
+    if settings.IS_VERCEL:
+        if settings.DATABASE_BACKEND not in {'auto', 'postgres', 'postgresql'} or not settings.DATABASE_URL or settings.DATABASE_URL.startswith('sqlite:'):
+            raise RuntimeError('Vercel requires DATABASE_URL for a hosted PostgreSQL database; local SQLite is not persistent')
+        if settings.ALLOW_SQLITE_FALLBACK:
+            raise RuntimeError('Set ALLOW_SQLITE_FALLBACK=False on Vercel')
+        if not 0 < settings.MAX_FILE_SIZE_BYTES <= 4 * 1024 * 1024:
+            raise RuntimeError('Vercel direct uploads require MAX_UPLOAD_BYTES between 1 and 4194304')
     explicit_sqlite = settings.DATABASE_URL.startswith('sqlite:')
     if settings.DATABASE_BACKEND == 'sqlite' or explicit_sqlite:
         local = _sqlite_engine(settings.DATABASE_URL if explicit_sqlite else None)
@@ -97,7 +117,14 @@ def init_db():
                 address = make_url(settings.DATABASE_URL.replace('postgres://', 'postgresql://', 1)).set(drivername='postgresql+psycopg2')
             else:
                 address = URL.create('postgresql+psycopg2', username=settings.POSTGRES_USER, password=settings.POSTGRES_PASSWORD or None, host=settings.POSTGRES_HOST, port=settings.POSTGRES_PORT, database=settings.POSTGRES_DATABASE)
-            pg_engine = create_engine(address, pool_pre_ping=True, pool_recycle=1800, connect_args={'connect_timeout': 2})
+            if settings.IS_VERCEL:
+                if not address.host or address.host.lower() in {'localhost', '127.0.0.1', '::1'}:
+                    raise ValueError('A hosted database address is required')
+                if address.query.get('sslmode') not in {'require', 'verify-ca', 'verify-full'}:
+                    address = address.update_query_dict({'sslmode': 'require'})
+            pg_engine = create_engine(address, pool_pre_ping=True, pool_recycle=300 if settings.IS_VERCEL else 1800,
+                **({'pool_size': 1, 'max_overflow': 1, 'pool_timeout': 10} if settings.IS_VERCEL else {}),
+                connect_args={'connect_timeout': 10 if settings.IS_VERCEL else 2}, hide_parameters=True)
             _ensure_schema(pg_engine)
             engine = pg_engine; ACTIVE_DB_TYPE = 'PostgreSQL'
         except Exception as error:
@@ -210,7 +237,16 @@ def get_active_db_type():
     return ACTIVE_DB_TYPE
 
 
+def get_analysis_db():
+    if settings.stateless_analysis_enabled:
+        yield None
+        return
+    yield from get_db()
+
+
 def get_db():
+    if settings.IS_VERCEL and not settings.DATABASE_URL:
+        raise HTTPException(503, 'The backend database is not configured. Set DATABASE_URL to a PostgreSQL server reachable from Vercel. A localhost address on your laptop cannot be used by this deployment.')
     if SessionLocal is None:
         init_db()
     db = SessionLocal()

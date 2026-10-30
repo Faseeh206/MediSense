@@ -117,11 +117,7 @@ try {
     if (action === 'dev') await freePort(5173);
     else npm(['run', 'build']);
     serve(action === 'dev', port);
-  } else if (action === 'test') {
-    requireInstall();
-    run(python, ['-m', 'unittest', 'discover', '-s', 'tests', '-v'], backend);
-    npm(['test']);
-  } else throw new Error('Use npm run setup, npm start, npm run dev, or npm test.');
+  } else throw new Error('Use npm run setup, npm start, or npm run dev.');
 } catch (error) {
   console.error(`MediSense: ${error.message}`);
   process.exitCode = 1;

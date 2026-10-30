@@ -115,6 +115,9 @@ export default function App() {
 
         {/* Upload Zone */}
         <UploadZone
+          maxUploadBytes={systemHealth?.max_upload_bytes}
+          requiresDemoDocument={systemHealth?.requires_demo_document ?? true}
+          historyAvailable={systemHealth?.history_available ?? true}
           onAnalysisSuccess={handleAnalysisSuccess}
           onSelectSample={handleSelectSample}
           activeSampleKey={analysisResult?.is_sample ? analysisResult.sample_key : null}

@@ -1,5 +1,6 @@
 import { requestDocumentAnalysis } from './uploadDocument.js';
 import { getClientHeaders } from './clientIdentity.js';
+import { apiErrorMessage } from './apiErrors.js';
 
 // Same-origin API requests work on localhost, phones, and a hosted frontend.
 // Vite proxies /api during development; production can serve the API alongside
@@ -9,18 +10,16 @@ const API_BASE = (import.meta.env?.VITE_API_BASE || '').trim().replace(/\/+$/, '
 async function requestApi(path, options = {}) {
   const res = await fetch(`${API_BASE}/api${path}`, { ...options, headers: getClientHeaders(options.headers) });
   const data = await res.json().catch(() => null);
-  if (!res.ok) {
-    const detail = typeof data?.detail === 'string' ? data.detail : Array.isArray(data?.detail) ? data.detail.map(item => item.msg).join('. ') : '';
-    throw new Error(detail || `The service could not complete this request (${res.status}). Please try again.`);
-  }
+  if (!res.ok) throw new Error(apiErrorMessage(data, res.status));
   if (!data || typeof data !== 'object') throw new Error('The service returned an unreadable response. Please try again.');
   return data;
 }
 export const fetchHealth = () => requestApi('/health');
-export async function uploadAndAnalyze({ file, documentType, signal, onUploadProgress, onUploaded }) {
+export async function uploadAndAnalyze({ file, documentType, signal, onUploadProgress, onUploaded, demoDocumentConfirmed = false }) {
   const formData = new FormData();
   formData.append('file', file);
   if (documentType) formData.append('document_type', documentType);
+  formData.append('demo_document_confirmed', String(demoDocumentConfirmed));
   if (onUploadProgress || onUploaded) return requestDocumentAnalysis({
     url: `${API_BASE}/api/analyze`, formData, signal, onUploadProgress, onUploaded, headers: getClientHeaders(),
   });
