@@ -9,15 +9,15 @@
 <h1 align="center">Your results, made clear.</h1>
 
 <p align="center">
-  <a href="https://react.dev"><img src="https://img.shields.io/badge/React-23272F?style=flat&logo=react&logoColor=61DAFB" width="112" height="38" alt="React" /></a>
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React%2019.3.1-23272F?style=flat&logo=react&logoColor=61DAFB" width="139" height="28" alt="React 19.3.1" /></a>
   &nbsp;
-  <a href="https://vite.dev"><img src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=FFD62E" width="93" height="38" alt="Vite" /></a>
+  <a href="https://vite.dev"><img src="https://img.shields.io/badge/Vite%208.3.4-646CFF?style=flat&logo=vite&logoColor=FFD62E" width="116" height="28" alt="Vite 8.3.4" /></a>
   &nbsp;
-  <a href="https://fastapi.tiangolo.com"><img src="https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=FFFFFF" width="131" height="38" alt="FastAPI" /></a>
+  <a href="https://fastapi.tiangolo.com"><img src="https://img.shields.io/badge/FastAPI%200.142.2-009688?style=flat&logo=fastapi&logoColor=FFFFFF" width="164" height="28" alt="FastAPI 0.142.2" /></a>
   &nbsp;
-  <a href="https://build.nvidia.com"><img src="https://img.shields.io/badge/NVIDIA%20Nemotron-76B900?style=flat&logo=nvidia&logoColor=FFFFFF" width="241" height="38" alt="NVIDIA Nemotron" /></a>
+  <a href="https://build.nvidia.com"><img src="https://img.shields.io/badge/NVIDIA%20Nemotron%203.5-76B900?style=flat&logo=nvidia&logoColor=FFFFFF" width="209" height="28" alt="NVIDIA Nemotron 3.5" /></a>
   &nbsp;
-  <a href="https://openrouter.ai"><img src="https://img.shields.io/badge/OpenRouter-6D28D9?style=flat&logo=openrouter&logoColor=FFFFFF" width="177" height="38" alt="OpenRouter" /></a>
+  <a href="https://openrouter.ai"><img src="https://img.shields.io/badge/OpenRouter%20v1-6D28D9?style=flat&logo=openrouter&logoColor=FFFFFF" width="155" height="28" alt="OpenRouter v1" /></a>
 </p>
 
 <p align="center">
