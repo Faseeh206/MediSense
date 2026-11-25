@@ -9,15 +9,15 @@
 <h1 align="center">Your results, made clear.</h1>
 
 <p align="center">
-  <a href="https://react.dev"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" height="22" align="absmiddle" alt="React" />&nbsp;<strong>React</strong></a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://vite.dev"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg" height="22" align="absmiddle" alt="Vite" />&nbsp;<strong>Vite</strong></a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://fastapi.tiangolo.com"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg" height="22" align="absmiddle" alt="FastAPI" />&nbsp;<strong>FastAPI</strong></a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://build.nvidia.com"><img src="https://cdn.simpleicons.org/nvidia/76B900" height="22" align="absmiddle" alt="NVIDIA Nemotron" />&nbsp;<strong>NVIDIA Nemotron</strong></a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://openrouter.ai"><img src="https://cdn.simpleicons.org/openrouter/6466F1" height="22" align="absmiddle" alt="OpenRouter" />&nbsp;<strong>OpenRouter</strong></a>
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React-2a221d?style=flat&logo=react&logoColor=61DAFB" height="26" alt="React" /></a>
+  &nbsp;
+  <a href="https://vite.dev"><img src="https://img.shields.io/badge/Vite-2a221d?style=flat&logo=vite&logoColor=FFD62E" height="26" alt="Vite" /></a>
+  &nbsp;
+  <a href="https://fastapi.tiangolo.com"><img src="https://img.shields.io/badge/FastAPI-2a221d?style=flat&logo=fastapi&logoColor=009688" height="26" alt="FastAPI" /></a>
+  &nbsp;
+  <a href="https://build.nvidia.com"><img src="https://img.shields.io/badge/NVIDIA%20Nemotron-2a221d?style=flat&logo=nvidia&logoColor=76B900" height="26" alt="NVIDIA Nemotron" /></a>
+  &nbsp;
+  <a href="https://openrouter.ai"><img src="https://img.shields.io/badge/OpenRouter-2a221d?style=flat&logo=openrouter&logoColor=818CF8" height="26" alt="OpenRouter" /></a>
 </p>
 
 <p align="center">
