@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="2" viewBox="0 0 1000 2" preserveAspectRatio="none" role="presentation">
+  <defs>
+    <linearGradient id="div-light" x1="0" y1="0" x2="1000" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c9966b" stop-opacity="0.2"/>
+      <stop offset="0.1" stop-color="#b87c4f" stop-opacity="0.65"/>
+      <stop offset="0.5" stop-color="#a86b3e" stop-opacity="0.75"/>
+      <stop offset="0.9" stop-color="#b87c4f" stop-opacity="0.65"/>
+      <stop offset="1" stop-color="#c9966b" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0.25" width="1000" height="1.5" rx="0.75" fill="url(#div-light)"/>
+</svg>

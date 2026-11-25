@@ -29,11 +29,31 @@
   <a href="LICENSE">MIT licensed · Open source</a>
 </p>
 
+<br>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
+
 ## 🎬 Watch MediSense
 
 https://github.com/user-attachments/assets/3ff8b286-e4eb-4e2c-9cb5-9242625ddaa2
 
 A 1080p walkthrough featuring the hero visuals and sample-report views.
+
+<br>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
 
 ## 💡 Understanding comes first
 
@@ -43,7 +63,17 @@ MediSense turns lab reports and prescriptions into clear explanations, organized
 
 > 🩺 **Medical disclaimer:** MediSense supports understanding and conversation only. It does not diagnose, prescribe, or replace a qualified clinician.
 
-<a id="what-you-can-do"></a>
+<br>
+
+<p align="center">
+  <a id="what-you-can-do"></a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
+
 ## ✨ What you can do
 
 | Feature | Summary |
@@ -58,7 +88,17 @@ MediSense turns lab reports and prescriptions into clear explanations, organized
 
 **Accepted uploads:** PDF, JPG/JPEG, PNG · **Max size:** 10 MB locally (`4 MB` on Vercel) · **Max PDF pages:** 30.
 
-<a id="quick-start"></a>
+<br>
+
+<p align="center">
+  <a id="quick-start"></a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
+
 ## 🚀 Quick start
 
 ### 1. Prerequisites
@@ -97,7 +137,17 @@ npm run setup -- --python /path/to/python
 
 </details>
 
-<a id="how-it-works"></a>
+<br>
+
+<p align="center">
+  <a id="how-it-works"></a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
+
 ## ⚙️ How it works
 
 ```mermaid
@@ -117,6 +167,8 @@ flowchart LR
 
 The hero scrubs **240 frames at 1920×1080** using GSAP ScrollTrigger and provides a static reduced-motion mode.
 
+<br>
+
 ### 🧱 Built with
 
 | Layer | Technologies |
@@ -128,18 +180,38 @@ The hero scrubs **240 frames at 1920×1080** using GSAP ScrollTrigger and provid
 | **Storage** | <img src="https://cdn.simpleicons.org/sqlalchemy/D71F00" width="18" height="18" align="absmiddle" alt="SQLAlchemy" />&nbsp;SQLAlchemy &nbsp;·&nbsp; <img src="https://cdn.simpleicons.org/sqlite/0F80CC" width="18" height="18" align="absmiddle" alt="SQLite" />&nbsp;SQLite &nbsp;·&nbsp; <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" width="18" height="18" align="absmiddle" alt="PostgreSQL" />&nbsp;PostgreSQL |
 | **Checks** | <img src="https://cdn.simpleicons.org/oxc/FF6B35" width="18" height="18" align="absmiddle" alt="Oxlint" />&nbsp;Oxlint &nbsp;·&nbsp; <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg" width="18" height="18" align="absmiddle" alt="Vite" />&nbsp;Vite |
 
+<br>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
+
 ## 📁 Project structure
 
 ```text
 MediSense/
 ├── backend/              FastAPI app, AI provider integration, validation & DB
 ├── frontend/             React UI, hero frames, brand assets & fonts
-├── docs/assets/          README wordmarks
+├── docs/assets/          README wordmarks & dividers
 ├── scripts/              Cross-platform setup & start scripts
 └── .github/workflows/    Windows and Linux CI checks
 ```
 
-<a id="checks"></a>
+<br>
+
+<p align="center">
+  <a id="checks"></a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
+
 ## ✅ Checks
 
 ```sh
@@ -150,7 +222,17 @@ npm run build
 
 GitHub Actions runs these on Windows and Linux to verify helper syntax, frontend linting, and production bundling.
 
-<a id="configuration"></a>
+<br>
+
+<p align="center">
+  <a id="configuration"></a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
+
 ## 🔧 Configuration
 
 See [backend/.env.example](backend/.env.example) for all options (`backend/.env` stays private).
@@ -199,12 +281,32 @@ Restart the app to auto-create tables and verify `/api/health`.
 
 </details>
 
+<br>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
+
 ## 🔒 Data, privacy & medical context
 
 - **Browser-scoped history:** Saved scans use a random browser token hash (no login/sync; clearing browser data drops access).
 - **Third-party processing:** Files are sent to the configured AI provider only after upload confirmation; API keys stay on the backend.
 - **Not clinical advice:** Always verify lab ranges and medication details with a clinician or pharmacist.
 - **Demo content:** Bundled samples and testimonials are fictional/illustrative; secrets and local databases stay ignored from Git.
+
+<br>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
 
 ## 🛠️ Troubleshooting
 
@@ -217,7 +319,15 @@ Restart the app to auto-create tables and verify `/api/health`.
 | Port 8000 busy | Stop the other server or run `npm start -- --port 8001`. |
 | Setup fails | Verify Node.js 22.12+ / Python 3.11+ (`venv` package on Linux) and internet access. |
 
----
+<br>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/section-divider-light.svg">
+    <img src="docs/assets/section-divider-light.svg" alt="" width="1000" height="2">
+  </picture>
+</p>
 
 <p align="center">
   <picture>
